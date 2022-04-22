@@ -1,8 +1,8 @@
-import axios from "axios";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Header from "./Header";
-import styled from "styled-components";
+import axios from 'axios';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Header from './Header';
+import styled from 'styled-components';
 
 const ErrorBox = styled.span`
   color: red;
@@ -11,9 +11,9 @@ const ErrorBox = styled.span`
 `;
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   const navigate = useNavigate();
 
@@ -31,13 +31,12 @@ const Login = () => {
     try {
       const response = await axios.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_KEY}`,
-        body
+        body,
       );
       console.log(response.data);
-      navigate("/successSignIn");
+      navigate('/successSignIn');
     } catch (error) {
-      alert("로그인에 실패했습니다");
-      setLoginError("로그인에 실패했습니다");
+      setLoginError('로그인에 실패했습니다');
     }
   };
   return (
@@ -56,7 +55,7 @@ const Login = () => {
         <ErrorBox>{loginError}</ErrorBox>
       </section>
       <div>
-        <Link to="">비밀번호 찾기</Link>
+        <Link to="/findPassword">비밀번호 찾기</Link>
         <Link to="">아이디 찾기</Link>
         <Link to="/join">회원가입</Link>
       </div>

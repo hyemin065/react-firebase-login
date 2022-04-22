@@ -1,9 +1,7 @@
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import Header from "./Header";
-// import { firestore } from "./firebase";
-import { useEffect } from "react";
-import GlobalStyles from "./GlobalStyles";
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import Header from './Header';
+import GlobalStyles from './GlobalStyles';
 
 const MainWrap = styled.div`
   width: 100%;
@@ -28,16 +26,6 @@ const StyledLink = styled(Link)`
 `;
 
 function App() {
-  // useEffect(() => {
-  //   const user = firestore.collection("user");
-  //   user
-  //     .doc("user_item")
-  //     .get()
-  //     .then((doc) => {
-  //       console.log(doc.data());
-  //     });
-  //   console.log(user);
-  // });
   return (
     <div className="App">
       <GlobalStyles />

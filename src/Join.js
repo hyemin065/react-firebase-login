@@ -1,9 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
-import Header from "./Header";
+import { Link, useNavigate } from 'react-router-dom';
+import Header from './Header';
 // import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
 
 const JoinArea = styled.section`
   display: flex;
@@ -19,13 +19,13 @@ const ErrorBox = styled.span`
 `;
 
 const Join = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordConfirmError, setPasswordConfirmError] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordConfirmError, setPasswordConfirmError] = useState('');
 
   const navigate = useNavigate();
 
@@ -45,56 +45,55 @@ const Join = () => {
   const changePasswordConfirm = (e) => {
     setPasswordConfirm(e.target.value);
     if (e.target.value === password) {
-      console.log("같음");
+      console.log('같음');
     } else {
-      console.log("다름");
+      console.log('다름');
     }
   };
 
   const Signup = async (e) => {
     e.preventDefault();
-    if (email === "") {
-      setEmailError("이메일을 입력해주세요");
+    if (email === '') {
+      setEmailError('이메일을 입력해주세요');
       return;
     } else {
-      setEmailError("");
+      setEmailError('');
     }
 
     if (regExp.test(email) === false) {
-      setEmailError("이메일 형식이 올바르지 않습니다");
+      setEmailError('이메일 형식이 올바르지 않습니다');
       return;
     } else {
-      setEmailError("");
+      setEmailError('');
     }
 
     if (password.trim().length === 0) {
-      setPasswordError("비밀번호를 입력해주세요");
+      setPasswordError('비밀번호를 입력해주세요');
       return;
     } else {
-      setPasswordError("");
+      setPasswordError('');
     }
 
     if (password.length < 8) {
-      setPasswordError("비밀번호가 8자리 이하입니다");
+      setPasswordError('비밀번호가 8자리 이하입니다');
       return;
     } else {
-      setPasswordError("");
+      setPasswordError('');
     }
 
     if (passwordConfirm !== password) {
-      setPasswordConfirmError("비밀번호가 다릅니다");
+      setPasswordConfirmError('비밀번호가 다릅니다');
       return;
     } else {
-      setPasswordConfirmError("");
+      setPasswordConfirmError('');
     }
     let body = { email, password, returnSecureToken: true };
 
     const response = await axios.post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`,
-      body
+      body,
     );
     const data = await response.data;
-    console.log(data);
     // const updateBody = {
     //   idToken: data.idToken,
     //   displayName: name,
@@ -113,7 +112,7 @@ const Join = () => {
 
     // submitLocalStorage(data.email, data.idToken, updateData.displayName);
 
-    navigate("/successSignUp");
+    navigate('/successSignUp');
   };
 
   // const submitLocalStorage = (email, token, name) => {
@@ -141,11 +140,7 @@ const Join = () => {
         </div>
         <div className="form-group">
           <label htmlFor="">비밀번호 확인</label>
-          <input
-            type="password"
-            onChange={changePasswordConfirm}
-            value={passwordConfirm}
-          />
+          <input type="password" onChange={changePasswordConfirm} value={passwordConfirm} />
           <ErrorBox>{passwordConfirmError}</ErrorBox>
         </div>
 
