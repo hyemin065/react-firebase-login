@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Header from './Header';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from './user/userSlice';
+import { login } from './user/userSlice';
 
 const ErrorBox = styled.span`
   color: red;
@@ -15,6 +17,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const changeEmail = (e) => {
@@ -25,6 +29,22 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const getUserData = async (idToken) => {
+    let body = {
+      idToken: idToken,
+    };
+    try {
+      const response = await axios.post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.REACT_APP_API_KEY}`,
+        body,
+      );
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      alert('데이터불러오기 실패.');
+    }
+  };
+
   const loginHandler = async () => {
     const body = { email, password, returnSecureToken: true };
 
@@ -33,7 +53,11 @@ const Login = () => {
         `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_KEY}`,
         body,
       );
-      console.log(response.data);
+
+      const userInfo = await getUserData(response.data.idToken);
+      console.log(userInfo.users[0]);
+      dispatch(login(userInfo.users[0]));
+      localStorage.setItem('loginToken', response.data.idToken);
       navigate('/successSignIn');
     } catch (error) {
       setLoginError('로그인에 실패했습니다');
@@ -41,7 +65,6 @@ const Login = () => {
   };
   return (
     <>
-      <Header />
       <section className="">
         <div className="form-group">
           <label htmlFor="">이메일</label>
@@ -56,7 +79,6 @@ const Login = () => {
       </section>
       <div>
         <Link to="/findPassword">비밀번호 찾기</Link>
-        <Link to="">아이디 찾기</Link>
         <Link to="/join">회원가입</Link>
       </div>
     </>

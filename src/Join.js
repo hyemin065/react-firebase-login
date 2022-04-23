@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
-import Header from './Header';
-// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { login } from './user/userSlice';
 
 const JoinArea = styled.section`
   display: flex;
@@ -26,7 +26,9 @@ const Join = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [passwordConfirmError, setPasswordConfirmError] = useState('');
+  const [joinError, setJoinError] = useState('');
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const regExp = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
@@ -44,11 +46,6 @@ const Join = () => {
 
   const changePasswordConfirm = (e) => {
     setPasswordConfirm(e.target.value);
-    if (e.target.value === password) {
-      console.log('같음');
-    } else {
-      console.log('다름');
-    }
   };
 
   const Signup = async (e) => {
@@ -87,42 +84,47 @@ const Join = () => {
     } else {
       setPasswordConfirmError('');
     }
-    let body = { email, password, returnSecureToken: true };
 
-    const response = await axios.post(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`,
-      body,
-    );
-    const data = await response.data;
-    // const updateBody = {
-    //   idToken: data.idToken,
-    //   displayName: name,
-    //   photoUrl: "",
-    //   deleteAttribute: [],
-    //   returnSecureToken: true,
-    // };
+    try {
+      let body = { email, password, returnSecureToken: true };
+      const response = await axios.post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`,
+        body,
+      );
 
-    // const updateProfile = await axios.post(
-    //   `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${process.env.REACT_APP_API_KEY}`,
-    //   updateBody
-    // );
+      const updateUserInfo = await updateProfile(response.data);
 
-    // const updateData = await updateProfile.data;
-    // console.log(updateData);
-
-    // submitLocalStorage(data.email, data.idToken, updateData.displayName);
-
-    navigate('/successSignUp');
+      dispatch(login(updateUserInfo));
+      navigate('/successSignUp', { state: name });
+    } catch (e) {
+      setJoinError('이미 사용중인 아이디입니다');
+    }
   };
 
-  // const submitLocalStorage = (email, token, name) => {
-  //   localStorage.setItem("email", JSON.stringify(email));
-  //   localStorage.setItem("token", JSON.stringify(token));
-  //   localStorage.setItem("name", JSON.stringify(name));
-  // };
+  const updateProfile = async (data) => {
+    let body = {
+      idToken: data.idToken,
+      displayName: name,
+      photoUrl: '',
+      deleteAttribute: [],
+      returnSecureToken: true,
+    };
+
+    try {
+      const response = await axios.post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${process.env.REACT_APP_API_KEY}`,
+        body,
+      );
+
+      console.log(response.data);
+      return response.data;
+    } catch (e) {
+      console.log('error');
+    }
+  };
+
   return (
     <>
-      <Header />
       <JoinArea>
         <div className="form-group">
           <label htmlFor="">이름</label>
@@ -143,7 +145,7 @@ const Join = () => {
           <input type="password" onChange={changePasswordConfirm} value={passwordConfirm} />
           <ErrorBox>{passwordConfirmError}</ErrorBox>
         </div>
-
+        <ErrorBox>{joinError}</ErrorBox>
         <button onClick={Signup}>회원가입</button>
         <Link to="/login">로그인</Link>
       </JoinArea>

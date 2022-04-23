@@ -1,9 +1,12 @@
 import axios from 'axios';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const FindPassword = () => {
   const [email, setEmail] = useState('');
+
+  const navigate = useNavigate();
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
@@ -12,14 +15,13 @@ const FindPassword = () => {
   const sendPasswordResetEmailHandler = async () => {
     const body = { email, requestType: 'PASSWORD_RESET' };
     try {
-      const reponse = await axios.post(
+      await axios.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${process.env.REACT_APP_API_KEY}`,
         body,
       );
-      alert('입력된 이메일로 비밀번호 재설정 메일이 발송되었습니다');
-      setEmail('');
+      navigate('/sendPasswordEmail');
     } catch (error) {
-      console.log('없는 아이디입니다');
+      alert('없는 아이디입니다');
     }
   };
   return (
