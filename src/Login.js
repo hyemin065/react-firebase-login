@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from './user/userSlice';
 import { login } from './user/userSlice';
 
 const ErrorBox = styled.span`
@@ -16,10 +15,17 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const isUser = localStorage.getItem('idToken');
 
-  const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isUser) {
+      alert('로그인상태입니다');
+      navigate('/successSignIn');
+    }
+  });
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
@@ -57,7 +63,7 @@ const Login = () => {
       const userInfo = await getUserData(response.data.idToken);
       console.log(userInfo.users[0]);
       dispatch(login(userInfo.users[0]));
-      localStorage.setItem('loginToken', response.data.idToken);
+      localStorage.setItem('idToken', response.data.idToken);
       navigate('/successSignIn');
     } catch (error) {
       setLoginError('로그인에 실패했습니다');

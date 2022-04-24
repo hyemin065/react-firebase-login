@@ -92,10 +92,8 @@ const Join = () => {
         body,
       );
 
-      const updateUserInfo = await updateProfile(response.data);
-
-      dispatch(login(updateUserInfo));
-      navigate('/successSignUp', { state: name });
+      await updateProfile(response.data);
+      navigate('/successSignUp');
     } catch (e) {
       setJoinError('이미 사용중인 아이디입니다');
     }
@@ -116,7 +114,6 @@ const Join = () => {
         body,
       );
 
-      console.log(response.data);
       return response.data;
     } catch (e) {
       console.log('error');

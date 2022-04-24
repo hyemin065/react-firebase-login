@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from './user/userSlice';
+import { useEffect } from 'react';
 
 const MainWrap = styled.div`
   width: 100%;
@@ -23,12 +26,38 @@ const StyledLink = styled(Link)`
   }
 `;
 const Home = () => {
+  const isUser = localStorage.getItem('idToken');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userLogout = () => {
+    localStorage.removeItem('idToken');
+    Navigate('/');
+    dispatch(logout());
+    alert('로그 아웃 되었습니다');
+  };
+
+  useEffect(() => {
+    if (isUser) {
+      navigate('/successSignIn');
+    }
+  });
   return (
-    <MainWrap>
-      <StyledLink to="">구글로그인</StyledLink>
-      <StyledLink to="/login">로그인</StyledLink>
-      <StyledLink to="/join">회원가입</StyledLink>
-    </MainWrap>
+    <>
+      {isUser ? (
+        <MainWrap>
+          <StyledLink to="/" onClick={userLogout}>
+            로그아웃
+          </StyledLink>
+        </MainWrap>
+      ) : (
+        <MainWrap>
+          <StyledLink to="">구글로그인</StyledLink>
+          <StyledLink to="/login">로그인</StyledLink>
+          <StyledLink to="/join">회원가입</StyledLink>
+        </MainWrap>
+      )}
+    </>
   );
 };
 
