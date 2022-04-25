@@ -3,7 +3,6 @@ import { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { login } from './user/userSlice';
 
 const JoinArea = styled.section`
   display: flex;

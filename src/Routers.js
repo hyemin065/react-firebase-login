@@ -6,6 +6,7 @@ import SuccessSignUp from './SuccessSignUp';
 import SuccessSignIn from './SuccessSignIn';
 import FindPassword from './FindPasswordEmail';
 import SendPasswordEmail from './SendPassword';
+import ChangePassword from './ChangePassword';
 
 const Routers = () => {
   return (
@@ -16,6 +17,7 @@ const Routers = () => {
       <Route path="/successSignUp" element={<SuccessSignUp />} />
       <Route path="/successSignIn" element={<SuccessSignIn />} />
       <Route path="/findPassword" element={<FindPassword />} />
+      <Route path="/changePassword" element={<ChangePassword />} />
       <Route path="/sendPasswordEmail" element={<SendPasswordEmail />} />
     </Routes>
   );

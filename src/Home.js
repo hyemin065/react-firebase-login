@@ -28,7 +28,6 @@ const StyledLink = styled(Link)`
 const Home = () => {
   const isUser = localStorage.getItem('idToken');
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const userLogout = () => {
     localStorage.removeItem('idToken');
@@ -37,17 +36,18 @@ const Home = () => {
     alert('로그 아웃 되었습니다');
   };
 
-  useEffect(() => {
-    if (isUser) {
-      navigate('/successSignIn');
-    }
-  });
   return (
     <>
       {isUser ? (
         <MainWrap>
           <StyledLink to="/" onClick={userLogout}>
             로그아웃
+          </StyledLink>
+          <StyledLink to="/" onClick={userLogout}>
+            비밀번호 변경
+          </StyledLink>
+          <StyledLink to="/" onClick={userLogout}>
+            회원탈퇴
           </StyledLink>
         </MainWrap>
       ) : (

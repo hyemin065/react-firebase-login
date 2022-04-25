@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getUserData } from './Function';
 import { login, logout } from './user/userSlice';
 
 const SuccessSignUp = () => {
@@ -15,6 +16,8 @@ const SuccessSignUp = () => {
   }, []);
 
   const getUserData = async () => {
+    const idToken = localStorage.getItem('idToken');
+
     let body = {
       idToken: idToken,
     };
@@ -24,8 +27,7 @@ const SuccessSignUp = () => {
         `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.REACT_APP_API_KEY}`,
         body,
       );
-      dispatch(login(response.data.users[0]));
-      console.log(response.data.users[0]);
+      return response;
     } catch (e) {
       console.log('error');
     }
@@ -47,7 +49,6 @@ const SuccessSignUp = () => {
         `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${process.env.REACT_APP_API_KEY}`,
         body,
       );
-      console.log(response);
       localStorage.removeItem('idToken');
       alert('회원 탈퇴 완료했습니다');
       navigate('/');
@@ -60,7 +61,7 @@ const SuccessSignUp = () => {
     <>
       <div>{user.displayName}님, 로그인 되었습니다</div>
       <button onClick={userLogout}>로그아웃</button>
-      <button onClick={userLogout}>비밀번호 변경</button>
+      <Link to="/changePassword">비밀번호 변경</Link>
       <button onClick={deleteUserInfo}>회원탈퇴</button>
     </>
   );
