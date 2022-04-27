@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from './user/userSlice';
-import { useEffect } from 'react';
+import { auth } from './firebase';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const MainWrap = styled.div`
   width: 100%;
@@ -25,7 +27,10 @@ const StyledLink = styled(Link)`
     background-color: skyblue;
   }
 `;
+
 const Home = () => {
+  const [loginState, setLoginState] = useState(false);
+  const googleUser = auth.currentUser;
   const isUser = localStorage.getItem('idToken');
   const dispatch = useDispatch();
 
@@ -36,27 +41,44 @@ const Home = () => {
     alert('로그 아웃 되었습니다');
   };
 
+  const gooegleLogin = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log(result);
+        if (googleUser) {
+          setLoginState(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    console.log(googleUser, loginState);
+    if (googleUser) {
+      setLoginState(true);
+    }
+  }, [googleUser]);
+
   return (
     <>
-      {isUser ? (
-        <MainWrap>
+      <MainWrap>
+        {isUser || loginState ? (
           <StyledLink to="/" onClick={userLogout}>
             로그아웃
           </StyledLink>
-          <StyledLink to="/" onClick={userLogout}>
-            비밀번호 변경
-          </StyledLink>
-          <StyledLink to="/" onClick={userLogout}>
-            회원탈퇴
-          </StyledLink>
-        </MainWrap>
-      ) : (
-        <MainWrap>
-          <StyledLink to="">구글로그인</StyledLink>
-          <StyledLink to="/login">로그인</StyledLink>
-          <StyledLink to="/join">회원가입</StyledLink>
-        </MainWrap>
-      )}
+        ) : (
+          <>
+            <StyledLink to="/login">로그인</StyledLink>
+            <StyledLink to="/join">회원가입</StyledLink>
+            <button type="button" onClick={gooegleLogin}>
+              구글로그인
+            </button>
+          </>
+        )}
+      </MainWrap>
     </>
   );
 };
