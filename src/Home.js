@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Link, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -30,10 +30,10 @@ const StyledLink = styled(Link)`
 
 const Home = () => {
   const [loginState, setLoginState] = useState(false);
-  const googleUser = auth.currentUser;
   const isUser = localStorage.getItem('idToken');
   const dispatch = useDispatch();
 
+  //로그아웃
   const userLogout = () => {
     localStorage.removeItem('idToken');
     Navigate('/');
@@ -41,26 +41,25 @@ const Home = () => {
     alert('로그 아웃 되었습니다');
   };
 
+  //구글 로그인
   const gooegleLogin = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        console.log(result);
+        const googleUser = auth.currentUser;
+
+        //google login 했을때 user가 있으면 loginState변경
         if (googleUser) {
           setLoginState(true);
+          localStorage.setItem('idToken', googleUser.accessToken);
         }
+
+        console.log();
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
-  useEffect(() => {
-    console.log(googleUser, loginState);
-    if (googleUser) {
-      setLoginState(true);
-    }
-  }, [googleUser]);
 
   return (
     <>

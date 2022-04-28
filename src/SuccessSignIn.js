@@ -2,8 +2,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUserData } from './Function';
-import { login, logout } from './user/userSlice';
+import { logout } from './user/userSlice';
 
 const SuccessSignUp = () => {
   const navigate = useNavigate();

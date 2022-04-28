@@ -20,12 +20,13 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //새로고침시 idToken 가져오기
   useEffect(() => {
     if (isUser) {
       alert('로그인상태입니다');
       navigate('/successSignIn');
     }
-  });
+  }, []);
 
   const changeEmail = (e) => {
     setEmail(e.target.value);
@@ -35,6 +36,7 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  //user 데이터 가져오기
   const getUserData = async (idToken) => {
     let body = {
       idToken: idToken,

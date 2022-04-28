@@ -30,11 +30,13 @@ const Join = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //이메일 정규표현식
   const regExp = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
   const changeName = (e) => {
     setName(e.target.value);
   };
+
   const changeEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -47,6 +49,7 @@ const Join = () => {
     setPasswordConfirm(e.target.value);
   };
 
+  //회원가입
   const Signup = async (e) => {
     e.preventDefault();
     if (email === '') {
@@ -86,6 +89,7 @@ const Join = () => {
 
     try {
       let body = { email, password, returnSecureToken: true };
+
       const response = await axios.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`,
         body,
@@ -98,6 +102,7 @@ const Join = () => {
     }
   };
 
+  //프로필 업데이트
   const updateProfile = async (data) => {
     let body = {
       idToken: data.idToken,
